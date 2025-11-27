@@ -12,19 +12,18 @@ const blog = [
   { titulo: "Impacto ambiental de la agricultura local", resumen: "HuertoHogar fomenta prácticas sustentables y el consumo consciente.", link: "#" },
   { titulo: "Recetas saludables de primavera", resumen: "Prepara postres y comidas frescas con ingredientes de tu pedido HuertoHogar.", link: "#" }
 ];
-
-// Info de impacto ambiental/social
 const impacto = [
   "Has apoyado a más de 5 familias agrícolas con tus compras este mes.",
   "Tu pedido reduce la huella de carbono: transporte eficiente y envases reciclables.",
   "El 100% de nuestros productores implementan prácticas sustentables.",
-  "Participa en la comunidad: talleres, cursos, y donaciones mensuales.",
+  "Participa en la comunidad: talleres, cursos, y donaciones mensuales."
 ];
 
-const Home = ({ user }) => (
+const Home = () => (
   <div style={{
-    background: "url('/img/papel-reciclado-textura.jpg') repeat", minHeight: "100vh",
-    padding: "0 0 70px 0", fontFamily: "Montserrat, sans-serif"
+    minHeight: "100vh",
+    padding: "0 0 70px 0", 
+    fontFamily: "Montserrat, sans-serif"
   }}>
     <div style={{
       maxWidth: 1100, margin: "42px auto", padding: 30, background: "#fff",
@@ -39,10 +38,8 @@ const Home = ({ user }) => (
         Bienvenido a HuertoHogar
       </h1>
       <p style={{ textAlign: "center" }}>
-        Tu tienda online de <b>productos frescos y orgánicos</b> directo del campo a tu puerta.
-        Vive saludable y apoya la agricultura local.
+        Tu tienda online de <b>productos frescos y orgánicos</b> directo del campo a tu puerta. Vive saludable y apoya la agricultura local.
       </p>
-      {/* Impacto ambiental/social */}
       <div style={{
         margin: "38px 0 18px 0", background: "#F5F5DC", borderRadius: 18,
         padding: "22px 28px"
@@ -56,7 +53,6 @@ const Home = ({ user }) => (
           ))}
         </ul>
       </div>
-      {/* Productos recomendados */}
       <div style={{ marginTop: 36 }}>
         <h2 style={{ color: "#FFD700", marginBottom: 14 }}>Productos Recomendados</h2>
         <div style={{
@@ -85,7 +81,6 @@ const Home = ({ user }) => (
           ))}
         </div>
       </div>
-      {/* Blog */}
       <div style={{ marginTop: 46 }}>
         <h2 style={{ color: "#8B4513", marginBottom: 14 }}>Nuestro Blog</h2>
         <div style={{
@@ -106,7 +101,6 @@ const Home = ({ user }) => (
           ))}
         </div>
       </div>
-      {/* Condiciones y beneficios */}
       <div style={{ marginTop: 44 }}>
         <h2 style={{ color: "#FFD700" }}>Condiciones y Beneficios</h2>
         <ul style={{ color: "#8B4513", fontSize: 16 }}>

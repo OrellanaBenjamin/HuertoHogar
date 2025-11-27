@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../config/firebase";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
@@ -7,6 +8,7 @@ const DEFAULT_AVATAR = "/img/avatar-default.png";
 const ADMIN_EMAIL = "admin@duoc.cl";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [tab, setTab] = useState("login");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
@@ -15,23 +17,18 @@ const Auth = () => {
   const [error, setError] = useState("");
   const [msg, setMsg] = useState("");
 
-  // Login
   const handleLogin = async e => {
     e.preventDefault();
     setError(""); setMsg("");
     try {
       const cred = await signInWithEmailAndPassword(auth, email, pass);
-      if (cred.user.email === ADMIN_EMAIL) {
-        setMsg("¡Has iniciado sesión como ADMIN!");
-      } else {
-        setMsg("¡Has iniciado sesión!");
-      }
+      setMsg(cred.user.email === ADMIN_EMAIL ? "¡Has iniciado sesión como ADMIN!" : "¡Has iniciado sesión!");
+      navigate("/perfil");        
     } catch (err) {
       setError(err.message);
     }
   };
 
-  // Register
   const handleRegister = async e => {
     e.preventDefault();
     setError(""); setMsg("");
@@ -47,22 +44,19 @@ const Auth = () => {
         telefono: "",
         rol: user.email === ADMIN_EMAIL ? "admin" : "cliente"
       });
-      setMsg(user.email === ADMIN_EMAIL
-        ? "Usuario ADMIN creado correctamente."
-        : "Usuario creado correctamente.");
+      setMsg("Usuario creado correctamente. Ahora puedes iniciar sesión.");
       setTab("login");
     } catch (err) {
       setError(err.message);
     }
   };
 
-  // Recover
   const handleRecover = async e => {
     e.preventDefault();
     setError(""); setMsg("");
     try {
       await sendPasswordResetEmail(auth, email);
-      setMsg("¡Se ha enviado un correo para restablecer tu clave!");
+      setMsg("¡Correo de recuperación enviado!");
     } catch (err) {
       setError(err.message);
     }
@@ -91,25 +85,10 @@ const Auth = () => {
           fontSize: 16, background: "none", border: "none", cursor: "pointer", borderBottom: tab === "recover" ? "2px solid #8B4513" : "none"
         }}>¿Olvidaste tu clave?</button>
       </div>
-
       {tab === "login" && (
         <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            style={{ padding: 9, borderRadius: 7, fontSize: 16 }}
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            required
-            value={pass}
-            onChange={e => setPass(e.target.value)}
-            style={{ padding: 9, borderRadius: 7, fontSize: 16 }}
-          />
+          <input type="email" placeholder="Email" required value={email} onChange={e => setEmail(e.target.value)} style={{ padding: 9, borderRadius: 7, fontSize: 16 }} />
+          <input type="password" placeholder="Contraseña" required value={pass} onChange={e => setPass(e.target.value)} style={{ padding: 9, borderRadius: 7, fontSize: 16 }} />
           <button type="submit" style={{
             background: "#2E8B57", color: "#fff", border: "none", borderRadius: 7, padding: "8px 0", fontWeight: "bold", fontSize: 18
           }}>
@@ -117,33 +96,11 @@ const Auth = () => {
           </button>
         </form>
       )}
-
       {tab === "register" && (
         <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-          <input
-            type="text"
-            placeholder="Nombre completo"
-            required
-            value={name}
-            onChange={e => setName(e.target.value)}
-            style={{ padding: 9, borderRadius: 7, fontSize: 16 }}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            style={{ padding: 9, borderRadius: 7, fontSize: 16 }}
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            required
-            value={pass}
-            onChange={e => setPass(e.target.value)}
-            style={{ padding: 9, borderRadius: 7, fontSize: 16 }}
-          />
+          <input type="text" placeholder="Nombre completo" required value={name} onChange={e => setName(e.target.value)} style={{ padding: 9, borderRadius: 7, fontSize: 16 }} />
+          <input type="email" placeholder="Email" required value={email} onChange={e => setEmail(e.target.value)} style={{ padding: 9, borderRadius: 7, fontSize: 16 }} />
+          <input type="password" placeholder="Contraseña" required value={pass} onChange={e => setPass(e.target.value)} style={{ padding: 9, borderRadius: 7, fontSize: 16 }} />
           <button type="submit" style={{
             background: "#FFD700", color: "#8B4513", border: "none", borderRadius: 7, padding: "8px 0", fontWeight: "bold", fontSize: 18
           }}>
@@ -151,17 +108,9 @@ const Auth = () => {
           </button>
         </form>
       )}
-
       {tab === "recover" && (
         <form onSubmit={handleRecover} style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-          <input
-            type="email"
-            placeholder="Email para recuperar clave"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            style={{ padding: 9, borderRadius: 7, fontSize: 16 }}
-          />
+          <input type="email" placeholder="Email para recuperar clave" required value={email} onChange={e => setEmail(e.target.value)} style={{ padding: 9, borderRadius: 7, fontSize: 16 }} />
           <button type="submit" style={{
             background: "#8B4513", color: "#fff", border: "none", borderRadius: 7, padding: "8px 0", fontWeight: "bold", fontSize: 17
           }}>
@@ -169,7 +118,6 @@ const Auth = () => {
           </button>
         </form>
       )}
-
       {msg && <div style={{ color: "#2E8B57", fontWeight: "bold", marginTop: 17 }}>{msg}</div>}
       {error && <div style={{ color: "darkred", fontWeight: "bold", marginTop: 17 }}>{error}</div>}
     </div>

@@ -1,9 +1,15 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import ProductList from "../../src/components/ProductList";
+import ProductList from "../../components/pages/ProductList";
 
-test("muestra productos", () => {
-  const products = [{id:"1",name:"Producto",category:"A",price:100,stock:10,img:""}];
-  const { getByText } = render(<ProductList products={products} addToCart={() => {}} />);
-  expect(getByText("Producto")).toBeTruthy();
+describe("ProductList", () => {
+  it("renderiza productos en la lista", () => {
+    const productos = [
+      { id: "1", name: "Manzana", category: "Frutas Frescas", precio: 1200, stock: 10, img: "", origen: "Chile" }
+    ];
+    const { getByText } = render(
+      <ProductList productos={productos} addToCart={() => {}} />
+    );
+    expect(getByText("Manzana")).toBeTruthy();
+  });
 });
