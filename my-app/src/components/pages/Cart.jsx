@@ -20,6 +20,7 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
   const [tipoEnvio, setTipoEnvio] = useState("normal"); 
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [showDeliveryWarning, setShowDeliveryWarning] = useState(false);
   const navigate = useNavigate();
 
   const subtotal = carrito.reduce((acc, item) => {
@@ -388,11 +389,151 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
               cursor: carrito.length === 0 ? "not-allowed" : "pointer"
             }}
             disabled={carrito.length === 0 || !user?.dirección?.trim() || !user?.teléfono?.trim()}
-            onClick={handleCheckoutWithDelivery}
+            onClick={() => {
+            if (!user?.dirección || !user?.teléfono) {
+              setShowDeliveryWarning(true);
+            } else {
+                handleCheckoutWithDelivery();
+            }
+          }}
           >
             ✅ Confirmar Pedido - ${total.toLocaleString()}
           </button>
         </>
+      )}
+
+      {showDeliveryWarning && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '12px',
+            padding: '30px',
+            maxWidth: '500px',
+            width: '90%',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+            fontFamily: 'Montserrat, sans-serif'
+          }}>
+            <div style={{ 
+              textAlign: 'center', 
+              marginBottom: '20px',
+              fontSize: '48px'
+            }}>
+              ⚠️
+            </div>
+            
+            <h2 style={{
+              color: '#2E8B57',
+              textAlign: 'center',
+              marginTop: 0,
+              marginBottom: '15px'
+            }}>
+              Información de Envío Incompleta
+            </h2>
+
+            <p style={{
+              color: '#666',
+              textAlign: 'center',
+              marginBottom: '20px',
+              lineHeight: '1.6'
+            }}>
+              Para poder procesar tu pedido, necesitamos saber:
+            </p>
+
+            <div style={{
+              background: '#f7f7f7',
+              padding: '15px',
+              borderRadius: '8px',
+              marginBottom: '20px',
+              textAlign: 'center'
+            }}>
+              {!user?.dirección && (
+                <div style={{ color: '#c62828', marginBottom: '10px', fontWeight: 'bold' }}>
+                  ❌ Dirección de entrega
+                </div>
+              )}
+              {!user?.teléfono && (
+                <div style={{ color: '#c62828', fontWeight: 'bold' }}>
+                  ❌ Teléfono de contacto
+                </div>
+              )}
+            </div>
+
+            <p style={{
+              color: '#666',
+              textAlign: 'center',
+              fontSize: '14px',
+              marginBottom: '25px'
+            }}>
+              Dirígete a tu perfil para completar estos datos antes de continuar.
+            </p>
+
+            <div style={{
+              display: 'flex',
+              gap: '10px',
+              justifyContent: 'center'
+            }}>
+              <button
+                onClick={() => setShowDeliveryWarning(false)}
+                style={{
+                  padding: '10px 20px',
+                  background: '#fff',
+                  color: '#2E8B57',
+                  border: '2px solid #2E8B57',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = '#f0f8f5';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = '#fff';
+                }}
+              >
+                Cerrar
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowDeliveryWarning(false);
+                  navigate('/perfil');
+                }}
+                style={{
+                  padding: '10px 20px',
+                  background: '#2E8B57',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = '#1e6a41';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = '#2E8B57';
+                }}
+              >
+                Ir a Perfil →
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
