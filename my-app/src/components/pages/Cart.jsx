@@ -13,7 +13,7 @@ const SHIPPING_OPTIONS = {
   express: { name: "Envío Express", cost: 4000, days: "Mañana" }
 };
 
-const Cart = ({ carrito, productos, onRemove, onChangeQty }) => {
+const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [tipoEntrega, setTipoEntrega] = useState("envio");
@@ -61,6 +61,7 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty }) => {
   };
 
   const handleCheckoutWithDelivery = async () => {
+    
     if (!auth.currentUser) {
       setErrorMsg("Debes iniciar sesión para comprar");
       return;
@@ -94,7 +95,7 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty }) => {
         fechaEstimadaEntrega: calcularFechaEntrega()
       });
 
-      navigate(`/confirmacion/${docRef.id}`, {
+      navigate(`/pago/${docRef.id}`, {
         state: {
           orderId: docRef.id,
           items,
@@ -386,7 +387,7 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty }) => {
               width: "100%",
               cursor: carrito.length === 0 ? "not-allowed" : "pointer"
             }}
-            disabled={carrito.length === 0}
+            disabled={carrito.length === 0 || !user?.dirección?.trim() || !user?.teléfono?.trim()}
             onClick={handleCheckoutWithDelivery}
           >
             ✅ Confirmar Pedido - ${total.toLocaleString()}

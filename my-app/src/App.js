@@ -17,6 +17,7 @@ import AdminOrders from "./components/pages/AdminOrders";
 import { collection, addDoc, db, auth } from "./config/firebase";
 import ProductDetail from "./components/pages/ProductDetail";
 import { useParams } from "react-router-dom";
+import CheckoutPayment from "./components/pages/CheckoutPayment";
 
 function ProductDetailWrapper({ productos, addToCart }) {
   const { id } = useParams();
@@ -111,7 +112,7 @@ function App() {
           path="/producto/:id"
           element={<ProductDetailWrapper productos={productos} addToCart={handleAddToCart} />}
         />
-        
+
         <Route
           path="/cart"
           element={
@@ -120,6 +121,7 @@ function App() {
               productos={productos}
               onRemove={handleRemove}
               onChangeQty={handleChangeQty}
+              user={user}
             />
           }
         />
@@ -127,6 +129,7 @@ function App() {
         <Route path="/perfil" element={<UserProfile />} />
         <Route path="/historial" element={<OrderHistory productos={productos} />} />
         <Route path="/confirmacion/:orderId" element={<OrderConfirmation productos={productos} />} />
+        <Route path="/pago/:orderId" element={<CheckoutPayment />} />
         <Route path="/admin/orders" element={<AdminOrders productos={productos} />} />
         <Route path="/condiciones" element={<Condiciones />} />
         <Route path="/blog" element={<Blog />} />
