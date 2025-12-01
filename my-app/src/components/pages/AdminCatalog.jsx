@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { db } from "../../config/firebase";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import AdminNavbar from "../AdminNavbar";
+import Button from "../atoms/Button";
+import Badge from "../atoms/Badge";
+
 
 const AdminCatalog = ({ productos }) => {
   const [editingId, setEditingId] = useState(null);
@@ -40,42 +43,28 @@ const AdminCatalog = ({ productos }) => {
       <h2 style={{ color: "#2E8B57", marginBottom: 10 }}>🛒 Gestión de Catálogo</h2>
       <p style={{ color: "#666", marginBottom: 25 }}>Actualiza precios, stock y disponibilidad</p>
 
-      {/* FILTROS */}
+
       <div style={{ marginBottom: 25, display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <button
+                <Button
           onClick={() => setFilter("todos")}
-          style={{
-            background: filter === "todos" ? "#2E8B57" : "#f0f0f0",
-            color: filter === "todos" ? "#fff" : "#333",
-            border: "none",
-            borderRadius: 20,
-            padding: "8px 16px",
-            cursor: "pointer",
-            fontWeight: "bold"
-          }}
+          variant={filter === "todos" ? "primary" : "secondary"}
+          style={{ borderRadius: 20, padding: "8px 16px" }}
         >
           Todos ({productos.length})
-        </button>
-        {categorias.map(cat => (
-          <button
+        </Button>
+                {categorias.map(cat => (
+          <Button
             key={cat}
             onClick={() => setFilter(cat)}
-            style={{
-              background: filter === cat ? "#2E8B57" : "#f0f0f0",
-              color: filter === cat ? "#fff" : "#333",
-              border: "none",
-              borderRadius: 20,
-              padding: "8px 16px",
-              cursor: "pointer",
-              fontWeight: "bold"
-            }}
+            variant={filter === cat ? "primary" : "secondary"}
+            style={{ borderRadius: 20, padding: "8px 16px" }}
           >
             {cat} ({productos.filter(p => p.category === cat).length})
-          </button>
+          </Button>
         ))}
       </div>
 
-      {/* TABLA */}
+
       <div style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden" }}>
           <thead>
@@ -135,41 +124,37 @@ const AdminCatalog = ({ productos }) => {
                       <option value="false">No disponible</option>
                     </select>
                   ) : (
-                    <span style={{
-                      padding: "4px 10px",
-                      borderRadius: 12,
-                      fontSize: 12,
-                      fontWeight: "bold",
-                      background: prod.disponible !== false ? "#d4edda" : "#f8d7da",
-                      color: prod.disponible !== false ? "#155724" : "#721c24"
-                    }}>
-                      {prod.disponible !== false ? "✓ Disponible" : "✗ No disponible"}
-                    </span>
+                                      <Badge variant={prod.disponible !== false ? "success" : "danger"}>
+                    {prod.disponible !== false ? "✓ Disponible" : "✗ No disponible"}
+                  </Badge>
                   )}
                 </td>
                 <td style={{ padding: 12, textAlign: "center" }}>
                   {editingId === prod.id ? (
                     <div style={{ display: "flex", gap: 5, justifyContent: "center" }}>
-                      <button
-                        onClick={() => handleSave(prod.id)}
-                        style={{ background: "#4CAF50", color: "#fff", border: "none", borderRadius: 5, padding: "6px 12px", cursor: "pointer", fontWeight: "bold" }}
-                      >
-                        ✓ Guardar
-                      </button>
-                      <button
-                        onClick={() => setEditingId(null)}
-                        style={{ background: "#f44336", color: "#fff", border: "none", borderRadius: 5, padding: "6px 12px", cursor: "pointer", fontWeight: "bold" }}
-                      >
-                        ✗ Cancelar
-                      </button>
+                    <Button
+                    onClick={() => handleSave(prod.id)}
+                    variant="success"
+                    style={{ padding: "6px 12px" }}
+                  >
+                    ✓ Guardar
+                    </Button>
+                    <Button
+                    onClick={() => setEditingId(null)}
+                    variant="danger"
+                    style={{ padding: "6px 12px" }}
+                  >
+                    ✗ Cancelar
+                    </Button>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => handleEdit(prod)}
-                      style={{ background: "#2196F3", color: "#fff", border: "none", borderRadius: 5, padding: "6px 12px", cursor: "pointer", fontWeight: "bold" }}
-                    >
-                      ✏️ Editar
-                    </button>
+                    <Button
+                    onClick={() => handleEdit(prod)}
+                    variant="info"
+                    style={{ padding: "6px 12px" }}
+                  >
+                    ✏️ Editar
+                    </Button>
                   )}
                 </td>
               </tr>

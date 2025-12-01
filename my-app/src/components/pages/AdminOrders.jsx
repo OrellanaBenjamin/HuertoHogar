@@ -4,6 +4,10 @@ import { onAuthStateChanged } from "firebase/auth";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "../AdminNavbar";
+import Button from "../atoms/Button";
+import Badge from "../atoms/Badge";
+import StatusDot from "../atoms/StatusDot";
+
 
 const ESTADOS = ["Solicitado", "Preparando", "Enviado", "Entregado"];
 
@@ -129,42 +133,30 @@ const AdminOrders = ({ productos }) => {
       </div>
 
       <div style={{ marginBottom: 25, display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <button
-          onClick={() => setFiltroEstado("todos")}
+              <Button
+        onClick={() => setFiltroEstado("todos")}
+        variant={filtroEstado === "todos" ? "primary" : "secondary"}
+        style={{ borderRadius: 20, padding: "8px 16px", fontSize: 13 }}
+      >
+        Todas ({orders.length})
+      </Button>
+              {ESTADOS.map(estado => (
+        <Button
+          key={estado}
+          onClick={() => setFiltroEstado(estado)}
+          variant={filtroEstado === estado ? "primary" : "secondary"}
           style={{
-            background: filtroEstado === "todos" ? "#2E8B57" : "#f0f0f0",
-            color: filtroEstado === "todos" ? "#fff" : "#333",
-            border: "none",
             borderRadius: 20,
             padding: "8px 16px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            fontSize: 13
+            fontSize: 13,
+            ...(filtroEstado === estado && { background: STATUS_COLORS[estado] })
           }}
         >
-          Todas ({orders.length})
-        </button>
-        {ESTADOS.map(estado => (
-          <button
-            key={estado}
-            onClick={() => setFiltroEstado(estado)}
-            style={{
-              background: filtroEstado === estado ? STATUS_COLORS[estado] : "#f0f0f0",
-              color: filtroEstado === estado ? "#000" : "#333",
-              border: "none",
-              borderRadius: 20,
-              padding: "8px 16px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              fontSize: 13
-            }}
-          >
-            {estado} ({orders.filter(o => o.estado === estado).length})
-          </button>
-        ))}
+          {estado} ({orders.filter(o => o.estado === estado).length})
+        </Button>
+      ))}
       </div>
 
-      {/* LISTA DE ÓRDENES */}
       {ordenesFiltradas.length === 0 ? (
         <div style={{ background: "#f9f9f9", padding: 40, borderRadius: 8, textAlign: "center", color: "#666" }}>
           <p style={{ fontSize: 16 }}>No hay órdenes en estado "{filtroEstado}"</p>
@@ -181,7 +173,6 @@ const AdminOrders = ({ productos }) => {
                 background: "#fafafa"
               }}
             >
-              {/* ENCABEZADO */}
               <div
                 onClick={() => setExpandedOrder(expandedOrder === orden.id ? null : orden.id)}
                 style={{
@@ -236,11 +227,9 @@ const AdminOrders = ({ productos }) => {
                 </span>
               </div>
 
-              {/* DETALLES EXPANDIDOS */}
               {expandedOrder === orden.id && (
                 <div style={{ padding: 20, background: "#fff", borderTop: "1px solid #e0e0e0" }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
-                    {/* CLIENTE */}
                     <div style={{ padding: 15, background: "#f9f9f9", borderRadius: 8 }}>
                       <h4 style={{ color: "#2E8B57", margin: "0 0 10px 0" }}>👤 Cliente</h4>
                       <p style={{ margin: "5px 0", fontSize: 13 }}>
@@ -254,7 +243,6 @@ const AdminOrders = ({ productos }) => {
                       </p>
                     </div>
 
-                    {/* RESUMEN */}
                     <div style={{ padding: 15, background: "#f0f8ff", borderRadius: 8 }}>
                       <h4 style={{ color: "#2196F3", margin: "0 0 10px 0" }}>📊 Resumen</h4>
                       <p style={{ margin: "5px 0", fontSize: 13 }}>
@@ -271,7 +259,6 @@ const AdminOrders = ({ productos }) => {
                     </div>
                   </div>
 
-                  {/* TABLA DE PRODUCTOS */}
                   <h4 style={{ color: "#2E8B57", marginBottom: 10 }}>Productos:</h4>
                   <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 15 }}>
                     <thead>

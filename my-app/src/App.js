@@ -144,10 +144,10 @@ function App() {
         <Route path="/historial" element={<OrderHistory productos={productos} />} />
         <Route path="/confirmacion/:orderId" element={<OrderConfirmation productos={productos} />} />
         <Route path="/pago/:orderId" element={<CheckoutPayment />} />
-        <Route path="/admin/orders" element={<AdminOrders productos={productos} />} />
         <Route path="/admin/catalog" element={<AdminCatalog productos={productos} />} />
         <Route path="/admin/reviews" element={<AdminReviews productos={productos} />} />
         <Route path="/admin/reports" element={<AdminReports productos={productos} />} />
+        <Route path="/admin" element={<Navigate to="/admin/orders" replace />} />
         <Route path="/condiciones" element={<Condiciones />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/nosotros" element={<Nosotros />} />

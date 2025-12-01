@@ -52,7 +52,7 @@ const AdminReports = ({ productos }) => {
       <h2 style={{ color: "#2E8B57", marginBottom: 10 }}>📊 Reportes de Ventas</h2>
       <p style={{ color: "#666", marginBottom: 25 }}>Análisis de ventas por categoría y productos</p>
 
-      {/* MÉTRICAS GENERALES */}
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 15, marginBottom: 30 }}>
         <div style={{ background: "#e8f5e9", border: "2px solid #4CAF50", padding: 20, borderRadius: 8, textAlign: "center" }}>
           <p style={{ margin: 0, fontSize: 28, fontWeight: "bold", color: "#2E8B57" }}>${totalVentas.toLocaleString()}</p>
@@ -68,7 +68,6 @@ const AdminReports = ({ productos }) => {
         </div>
       </div>
 
-      {/* VENTAS POR CATEGORÍA */}
       <h3 style={{ color: "#2E8B57", marginBottom: 15 }}>Ventas por Categoría</h3>
       <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden" }}>
         <thead>
@@ -119,7 +118,7 @@ const AdminReports = ({ productos }) => {
         </tbody>
       </table>
 
-      {/* PRODUCTOS MÁS VENDIDOS */}
+
       <h3 style={{ color: "#2E8B57", marginTop: 40, marginBottom: 15 }}>🔥 Top 10 Productos Más Vendidos</h3>
       <div style={{ background: "#fff", borderRadius: 8, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
