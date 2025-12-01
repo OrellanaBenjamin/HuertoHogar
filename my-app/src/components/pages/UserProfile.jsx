@@ -39,14 +39,15 @@ const UserProfile = () => {
   };
 
   const handleSave = async () => {
-    if (!user) return;
-    try {
-      await updateDoc(doc(db, "usuarios", user.uid), profile);
-      setSaved(true);
-    } catch (err) {
-      setError("Error al guardar: " + err.message);
-    }
-  };
+  if (!user) return;
+  try {
+    const userRef = doc(db, "usuarios", user.uid);
+    await (await getDoc(userRef)).exists() ? updateDoc(userRef, profile) : setDoc(userRef, profile);
+    setSaved(true);
+  } catch (err) {
+    setError("Error al guardar: " + err.message);
+  }
+};
 
   const handleLogout = async () => {
     await signOut(auth);

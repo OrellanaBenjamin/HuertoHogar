@@ -22,8 +22,8 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
   const [successMsg, setSuccessMsg] = useState("");
   const [showDeliveryWarning, setShowDeliveryWarning] = useState(false);
   const navigate = useNavigate();
-  const [tempDireccion, setTempDireccion] = useState(user?.dirección || '');
-  const [tempTelefono, setTempTelefono] = useState(user?.teléfono || '');
+  const [tempDireccion, setTempDireccion] = useState(user?.direccion || '');
+  const [tempTelefono, setTempTelefono] = useState(user?.telefono || '');
 
   const subtotal = carrito.reduce((acc, item) => {
     const prod = productos.find(p => p.id === item.id) || {};
@@ -80,10 +80,10 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
     }
 
     try {
-      const direccionFinal = tempDireccion?.trim() || user?.dirección?.trim() || '';
-      const telefonoFinal = tempTelefono?.trim() || user?.teléfono?.trim() || '';
+      const direccionFinal = tempDireccion?.trim() || user?.direccion?.trim() || '';
+      const telefonoFinal = tempTelefono?.trim() || user?.telefono?.trim() || '';
         if (tipoEntrega === 'envio' && (!direccionFinal || !telefonoFinal)) {
-          setErrorMsg('Dirección y teléfono requeridos para envío');
+          setErrorMsg('direccion y telefono requeridos para envío');
           return;}
 
       const fecha = new Date().toLocaleString("es-CL");
@@ -400,8 +400,8 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
   }}
   disabled={carrito.length === 0}
   onClick={() => {
-    const direccionFinal = tempDireccion?.trim() || user?.dirección?.trim() || '';
-    const telefonoFinal = tempTelefono?.trim() || user?.teléfono?.trim() || '';
+    const direccionFinal = tempDireccion?.trim() || user?.direccion?.trim() || '';
+    const telefonoFinal = tempTelefono?.trim() || user?.telefono?.trim() || '';
     
     if (tipoEntrega === 'envio' && (!direccionFinal || !telefonoFinal)) {
       setShowDeliveryWarning(true);
@@ -460,7 +460,7 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
         marginBottom: '20px',
         lineHeight: '1.6'
       }}>
-        Para procesar tu pedido, necesitamos saber dónde llevar el producto y un teléfono para comunicarse.
+        Para procesar tu pedido, necesitamos saber dónde llevar el producto y un telefono para comunicarse.
       </p>
 
       <div style={{ 
@@ -472,10 +472,10 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
         marginLeft: 'auto',
         marginRight: 'auto'
       }}>
-        {!user?.dirección && (
+        {!user?.direccion && (
           <div style={{ marginBottom: '15px' }}>
             <label style={{ fontWeight: 'bold', color: '#333', display: 'block', marginBottom: '5px' }}>
-              Dirección de entrega:
+              direccion de entrega:
             </label>
             <input 
               type="text" 
@@ -492,10 +492,10 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
             />
           </div>
         )}
-        {!user?.teléfono && (
+        {!user?.telefono && (
           <div>
             <label style={{ fontWeight: 'bold', color: '#333', display: 'block', marginBottom: '5px' }}>
-              Teléfono de contacto:
+              telefono de contacto:
             </label>
             <input 
               type="tel" 
@@ -570,8 +570,8 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
 
         <button
           onClick={() => {
-            if ((!user?.dirección && !tempDireccion?.trim()) || (!user?.teléfono && !tempTelefono?.trim())) {
-              setErrorMsg('❌ Completa dirección y teléfono requeridos');
+            if ((!user?.direccion && !tempDireccion?.trim()) || (!user?.telefono && !tempTelefono?.trim())) {
+              setErrorMsg('❌ Completa direccion y telefono requeridos');
               setTimeout(() => setErrorMsg(''), 4000);
               return;
             }
