@@ -400,12 +400,15 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
             }}
             disabled={carrito.length === 0 || (tipoEntrega === 'envio' && ((!user?.dirección?.trim() && !tempDireccion?.trim()) || (!user?.teléfono?.trim() && !tempTelefono?.trim())))}
             onClick={() => {
-            if (!user?.dirección || !user?.teléfono) {
-              setShowDeliveryWarning(true);
-            } else {
+            const direccionFinal = tempDireccion?.trim() || user?.dirección?.trim() || '';
+            const telefonoFinal = tempTelefono?.trim() || user?.teléfono?.trim() || '';
+  
+              if (tipoEntrega === 'envio' && (!direccionFinal || !telefonoFinal)) {
+                setShowDeliveryWarning(true);
+              } else {
                 handleCheckoutWithDelivery();
-            }
-          }}
+              }
+            }}
           >
             ✅ Confirmar Pedido - ${total.toLocaleString()}
           </button>
