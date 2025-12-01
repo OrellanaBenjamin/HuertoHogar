@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../../config/firebase";
+import { onAuthStateChanged } from "firebase/auth"; 
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import AdminNavbar from "../AdminNavbar";
 
 const ESTADOS = ["Solicitado", "Preparando", "Enviado", "Entregado"];
 
@@ -17,32 +19,40 @@ const AdminOrders = ({ productos }) => {
   const [filtroEstado, setFiltroEstado] = useState("todos");
   const [expandedOrder, setExpandedOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-  const user = auth.currentUser;
+  const user = auth.currentUser || null;
+  const [authChecked, setAuthChecked] = useState(false);
   const navigate = useNavigate();
-  const adminEmail = "Admin011@duoc.cl";
+  const adminEmail = "admin011@duoc.cl";
 
 
   useEffect(() => {
-  if (!user || user.email !== adminEmail) {
-    alert("❌ Acceso denegado. Solo administradores.");
-    navigate("/");
-    return;
-  }
-  
-  const cargar = async () => {
-    try {
-      const snaps = await getDocs(collection(db, "pedidos"));
-      const ordersList = snaps.docs.map(d => ({ id: d.id, ...d.data() }));
-      ordersList.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-      setOrders(ordersList);
-    } catch (err) {
-      console.error("Error cargando órdenes:", err);
-    } finally {
-      setLoading(false);
+  const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+    setAuthChecked(true);
+    
+    if (!currentUser || currentUser.email !== adminEmail) {
+      alert("❌ Acceso denegado. Solo administradores.");
+      navigate("/");
+      return;
     }
-  };
-  cargar();
-}, [user, navigate]);
+    
+    const cargar = async () => {
+      try {
+        const snaps = await getDocs(collection(db, "pedidos"));
+        const ordersList = snaps.docs.map(d => ({ id: d.id, ...d.data() }));
+        ordersList.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+        setOrders(ordersList);
+      } catch (err) {
+        console.error("Error cargando órdenes:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    cargar();
+  });
+
+  return () => unsubscribe();
+}, [navigate]);
 
   const cambiarEstado = async (orderId, nuevoEstado) => {
     try {
@@ -87,6 +97,7 @@ const AdminOrders = ({ productos }) => {
   return (
     <div style={{
       maxWidth: 1100,
+    
       margin: "40px auto",
       padding: 30,
       background: "#fff",
@@ -94,10 +105,10 @@ const AdminOrders = ({ productos }) => {
       boxShadow: "0 2px 14px #eef",
       fontFamily: "Montserrat, sans-serif"
     }}>
+            <AdminNavbar />
       <h2 style={{ color: "#2E8B57", marginBottom: 10 }}>⚙️ Panel de Administración</h2>
       <p style={{ color: "#666", marginBottom: 25 }}>Gestiona todas las órdenes del sistema</p>
 
-      {/* ESTADÍSTICAS */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 15, marginBottom: 25 }}>
         <div style={{ background: "#fff9e6", border: "2px solid #FFD700", padding: 15, borderRadius: 8, textAlign: "center" }}>
           <p style={{ margin: 0, fontSize: 24, fontWeight: "bold", color: "#FFA500" }}>{orders.length}</p>
@@ -117,7 +128,6 @@ const AdminOrders = ({ productos }) => {
         </div>
       </div>
 
-      {/* FILTROS */}
       <div style={{ marginBottom: 25, display: "flex", gap: 10, flexWrap: "wrap" }}>
         <button
           onClick={() => setFiltroEstado("todos")}

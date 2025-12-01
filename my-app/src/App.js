@@ -19,6 +19,10 @@ import ProductDetail from "./components/pages/ProductDetail";
 import { useParams } from "react-router-dom";
 import CheckoutPayment from "./components/pages/CheckoutPayment";
 import { getDoc, doc } from "firebase/firestore";
+import AdminCatalog from "./components/pages/AdminCatalog";
+import AdminReviews from "./components/pages/AdminReviews";
+import AdminReports from "./components/pages/AdminReports";
+
 
 
 function ProductDetailWrapper({ productos, addToCart }) {
@@ -141,6 +145,9 @@ function App() {
         <Route path="/confirmacion/:orderId" element={<OrderConfirmation productos={productos} />} />
         <Route path="/pago/:orderId" element={<CheckoutPayment />} />
         <Route path="/admin/orders" element={<AdminOrders productos={productos} />} />
+        <Route path="/admin/catalog" element={<AdminCatalog productos={productos} />} />
+        <Route path="/admin/reviews" element={<AdminReviews productos={productos} />} />
+        <Route path="/admin/reports" element={<AdminReports productos={productos} />} />
         <Route path="/condiciones" element={<Condiciones />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/nosotros" element={<Nosotros />} />
