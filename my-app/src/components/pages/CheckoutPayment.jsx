@@ -129,30 +129,6 @@ const CheckoutPayment = () => {
     }
   };
 
-    try {
-      setLoading(true);
-      
-
-      const orderRef = doc(db, 'pedidos', orderId);
-      await updateDoc(orderRef, {
-        metodoPago: paymentMethod,
-        ...(paymentMethod !== 'pago_vivienda' && {
-          ultimos4Digitos: cardNumber.slice(-4),
-          titular: cardHolder
-        })
-      });
-
-      setSuccess('Método de pago guardado exitosamente');
-      setTimeout(() => {
-        navigate(`/confirmacion/${orderId}`);
-      }, 1500);
-    } catch (err) {
-      setError('Error al procesar el pago: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '40px' }}>
@@ -271,9 +247,7 @@ const CheckoutPayment = () => {
         </div>
       )}
 
-      {/* Formulario de Pago */}
       <form onSubmit={handlePaymentSubmit}>
-        {/* Opción: Pago en Vivienda */}
         <div style={{ marginBottom: '20px' }}>
           <label style={{
             display: 'flex',
@@ -489,7 +463,33 @@ const CheckoutPayment = () => {
           </div>
         )}
 
-        {/* Botones de Acción */}
+                {paymentMethod === 'transferencia' && (
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '15px',
+              background: '#e8f5e9',
+              borderRadius: '8px',
+              marginTop: '10px',
+              marginBottom: '15px',
+              cursor: 'pointer',
+              border: '2px solid #4CAF50'
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={transferConfirmed}
+              onChange={(e) => setTransferConfirmed(e.target.checked)}
+              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            <span style={{ fontSize: '14px', color: '#333' }}>
+              ✓ Confirmo que he realizado la transferencia
+            </span>
+          </label>
+        )}
+
         <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
           <button
             type="button"

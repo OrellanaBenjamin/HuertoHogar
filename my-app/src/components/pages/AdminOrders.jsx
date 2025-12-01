@@ -19,22 +19,30 @@ const AdminOrders = ({ productos }) => {
   const [loading, setLoading] = useState(true);
   const user = auth.currentUser;
   const navigate = useNavigate();
+  const adminEmail = "Admin011@duoc.cl";
+
 
   useEffect(() => {
-    const cargar = async () => {
-      try {
-        const snaps = await getDocs(collection(db, "pedidos"));
-        const ordersList = snaps.docs.map(d => ({ id: d.id, ...d.data() }));
-        ordersList.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-        setOrders(ordersList);
-      } catch (err) {
-        console.error("Error cargando órdenes:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    cargar();
-  }, []);
+  if (!user || user.email !== adminEmail) {
+    alert("❌ Acceso denegado. Solo administradores.");
+    navigate("/");
+    return;
+  }
+  
+  const cargar = async () => {
+    try {
+      const snaps = await getDocs(collection(db, "pedidos"));
+      const ordersList = snaps.docs.map(d => ({ id: d.id, ...d.data() }));
+      ordersList.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      setOrders(ordersList);
+    } catch (err) {
+      console.error("Error cargando órdenes:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  cargar();
+}, [user, navigate]);
 
   const cambiarEstado = async (orderId, nuevoEstado) => {
     try {

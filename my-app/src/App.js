@@ -18,6 +18,8 @@ import { collection, addDoc, db, auth } from "./config/firebase";
 import ProductDetail from "./components/pages/ProductDetail";
 import { useParams } from "react-router-dom";
 import CheckoutPayment from "./components/pages/CheckoutPayment";
+import { getDoc, doc } from "firebase/firestore";
+
 
 function ProductDetailWrapper({ productos, addToCart }) {
   const { id } = useParams();
@@ -44,9 +46,17 @@ function App() {
   const [productos] = useState(productosIniciales);
 
   useEffect(() => {
-    const listener = onAuthStateChanged(auth, setUser);
-    return () => listener();
-  }, []);
+  const listener = onAuthStateChanged(auth, async (authUser) => {
+    if (authUser) {
+      const userDoc = await getDoc(doc(db, "usuarios", authUser.uid));
+      const userData = userDoc.exists() ? userDoc.data() : {};
+      setUser({ ...authUser, ...userData }); 
+    } else {
+      setUser(null);
+    }
+  });
+  return () => listener();
+}, []);
 
   const stockActual = productos.reduce((acc, prod) => {
     const carritoItem = carrito.find(item => item.id === prod.id);
