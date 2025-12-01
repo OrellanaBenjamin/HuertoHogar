@@ -38,7 +38,6 @@ const ProductList = ({ productos = [], addToCart }) => {
         </select>
       </div>
 
-      {/* mensaje pequeño debajo de filtros */}
       {mensaje && (
         <div
           style={{
@@ -88,7 +87,7 @@ const ProductList = ({ productos = [], addToCart }) => {
               to={`/producto/${p.id}`}
               style={{ textDecoration: "none", color: "inherit", width: "100%" }}
             >
-              {/* Contenedor de imagen con proporción fija */}
+
               <div
                 style={{
                   width: "100%",

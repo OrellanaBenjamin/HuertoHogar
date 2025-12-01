@@ -32,7 +32,6 @@ const ProductReviews = ({ productId }) => {
       fecha: new Date().toLocaleString()
     });
     setTexto("");
-    // recargar rápido
     const q = query(
       collection(db, "reseñas"),
       where("productId", "==", productId)
