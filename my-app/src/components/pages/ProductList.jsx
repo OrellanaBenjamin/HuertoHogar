@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+const storage = getStorage();
+const storageRef = ref(storage, `productos/${nombreImagen}`);
+await uploadBytes(storageRef, archivoImagen);
+const imageUrl = await getDownloadURL(storageRef);
 
 const ProductList = ({ productos = [], addToCart }) => {
   const [filter, setFilter] = useState("");

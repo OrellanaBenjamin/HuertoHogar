@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from "./components/pages/Navbar";
 import Cart from "./components/pages/Cart";
 import Home from "./components/pages/Home";
@@ -13,15 +13,16 @@ import UserProfile from "./components/pages/UserProfile";
 import Blog from "./components/pages/Blog";
 import Nosotros from "./components/pages/Nosotros";
 import Footer from "./components/pages/Footer";
-import AdminOrders from "./components/pages/AdminOrders";
 import { collection, addDoc, db, auth } from "./config/firebase";
 import ProductDetail from "./components/pages/ProductDetail";
 import { useParams } from "react-router-dom";
 import CheckoutPayment from "./components/pages/CheckoutPayment";
 import { getDoc, doc } from "firebase/firestore";
-import AdminCatalog from "./components/pages/AdminCatalog";
-import AdminReviews from "./components/pages/AdminReviews";
-import AdminReports from "./components/pages/AdminReports";
+import AdminOrders from "./components/pages/AdminOrders.jsx";
+import AdminCatalog from "./components/pages/AdminCatalog.jsx";
+import AdminReviews from "./components/pages/AdminReviews.jsx";
+import AdminReports from "./components/pages/AdminReports.jsx";
+
 
 
 
@@ -147,6 +148,7 @@ function App() {
         <Route path="/admin/catalog" element={<AdminCatalog productos={productos} />} />
         <Route path="/admin/reviews" element={<AdminReviews productos={productos} />} />
         <Route path="/admin/reports" element={<AdminReports productos={productos} />} />
+        <Route path="/admin/orders" element={<AdminOrders />} />
         <Route path="/admin" element={<Navigate to="/admin/orders" replace />} />
         <Route path="/condiciones" element={<Condiciones />} />
         <Route path="/blog" element={<Blog />} />
