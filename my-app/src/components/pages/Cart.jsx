@@ -413,95 +413,184 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
       )}
 
       {showDeliveryWarning && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
+  <div style={{
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000
+  }}>
+    <div style={{
+      background: '#fff',
+      borderRadius: '12px',
+      padding: '30px',
+      maxWidth: '500px',
+      width: '90%',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+      fontFamily: 'Montserrat, sans-serif'
+    }}>
+      <div style={{ 
+        textAlign: 'center', 
+        marginBottom: '20px',
+        fontSize: '48px'
+      }}>
+        ⚠️
+      </div>
+      
+      <h2 style={{
+        color: '#2E8B57',
+        textAlign: 'center',
+        marginTop: 0,
+        marginBottom: '15px'
+      }}>
+        Información de Envío Incompleta
+      </h2>
+
+      <p style={{
+        color: '#666',
+        textAlign: 'center',
+        marginBottom: '20px',
+        lineHeight: '1.6'
+      }}>
+        Para procesar tu pedido, necesitamos saber dónde llevar el producto y un teléfono para comunicarse.
+      </p>
+
+      <div style={{ 
+        background: '#f7f7f7', 
+        padding: '20px', 
+        borderRadius: '8px', 
+        marginBottom: '20px',
+        maxWidth: '400px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      }}>
+        {!user?.dirección && (
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ fontWeight: 'bold', color: '#333', display: 'block', marginBottom: '5px' }}>
+              Dirección de entrega:
+            </label>
+            <input 
+              type="text" 
+              value={tempDireccion} 
+              onChange={e => setTempDireccion(e.target.value)}
+              placeholder="Ej: Av. Ejemplo 123, Santiago" 
+              style={{ 
+                width: '100%', 
+                padding: '10px', 
+                borderRadius: '6px', 
+                border: '1px solid #ddd',
+                boxSizing: 'border-box'
+              }} 
+            />
+          </div>
+        )}
+        {!user?.teléfono && (
+          <div>
+            <label style={{ fontWeight: 'bold', color: '#333', display: 'block', marginBottom: '5px' }}>
+              Teléfono de contacto:
+            </label>
+            <input 
+              type="tel" 
+              value={tempTelefono} 
+              onChange={e => setTempTelefono(e.target.value)}
+              placeholder="Ej: +56912345678" 
+              style={{ 
+                width: '100%', 
+                padding: '10px', 
+                borderRadius: '6px', 
+                border: '1px solid #ddd',
+                boxSizing: 'border-box'
+              }} 
+            />
+          </div>
+        )}
+      </div>
+
+      <p style={{
+        color: '#666',
+        textAlign: 'center',
+        fontSize: '14px',
+        marginBottom: '25px'
+      }}>
+        Completa arriba directamente o ve a tu perfil para guardarlo permanentemente.
+      </p>
+
+      <div style={{
+        display: 'flex',
+        gap: '10px',
+        justifyContent: 'center',
+        flexWrap: 'wrap'
+      }}>
+        <button
+          onClick={() => setShowDeliveryWarning(false)}
+          style={{
+            padding: '12px 24px',
             background: '#fff',
-            borderRadius: '12px',
-            padding: '30px',
-            maxWidth: '500px',
-            width: '90%',
-            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-            fontFamily: 'Montserrat, sans-serif'
-          }}>
-            <div style={{ 
-              textAlign: 'center', 
-              marginBottom: '20px',
-              fontSize: '48px'
-            }}>
-              ⚠️
+            color: '#2E8B57',
+            border: '2px solid #2E8B57',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          onMouseOver={(e) => { e.target.style.background = '#f0f8f5'; }}
+          onMouseOut={(e) => { e.target.style.background = '#fff'; }}
+        >
+          Cerrar
+        </button>
+
+        <button
+          onClick={() => {
+            setShowDeliveryWarning(false);
+            navigate('/perfil');
+          }}
+          style={{
+            padding: '12px 24px',
+            background: '#2E8B57',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          onMouseOver={(e) => { e.target.style.background = '#1e6a41'; }}
+          onMouseOut={(e) => { e.target.style.background = '#2E8B57'; }}
+        >
+          Ir a Perfil →
+        </button>
+
+        <button
+          onClick={() => {
+            if ((!user?.dirección && !tempDireccion?.trim()) || (!user?.teléfono && !tempTelefono?.trim())) {
+              setErrorMsg('❌ Completa dirección y teléfono requeridos');
+              setTimeout(() => setErrorMsg(''), 4000);
+              return;
+            }
+            setShowDeliveryWarning(false);
+            handleCheckoutWithDelivery();
+          }}
+          style={{
+            padding: '12px 24px',
+            background: '#FF9800',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          onMouseOver={(e) => { e.target.style.background = '#F57C00'; }}
+          onMouseOut={(e) => { e.target.style.background = '#FF9800'; }}
+        >
+          Guardar y Continuar →
+              </button>
             </div>
-            
-            <h2 style={{
-              color: '#2E8B57',
-              textAlign: 'center',
-              marginTop: 0,
-              marginBottom: '15px'
-            }}>
-              Información de Envío Incompleta
-            </h2>
-
-            <p style={{
-              color: '#666',
-              textAlign: 'center',
-              marginBottom: '20px',
-              lineHeight: '1.6'
-            }}>
-              Para poder procesar tu pedido, necesitamos saber:
-            </p>
-
-            <div style={{ background: '#f7f7f7', padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
-  {!user?.dirección && (
-    <div>
-      <label style={{ fontWeight: 'bold', color: '#333', display: 'block', marginBottom: 5 }}>Dirección de entrega:</label>
-      <input type="text" value={tempDireccion} onChange={e => setTempDireccion(e.target.value)}
-             placeholder="Ej: Av. Ejemplo 123, Santiago" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', marginBottom: 10 }} />
-    </div>
-  )}
-  {!user?.teléfono && (
-    <div>
-      <label style={{ fontWeight: 'bold', color: '#333', display: 'block', marginBottom: 5 }}>Teléfono de contacto:</label>
-      <input type="tel" value={tempTelefono} onChange={e => setTempTelefono(e.target.value)}
-             placeholder="Ej: +56912345678" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
-    </div>
-            )}
-            </div>
-            <p style={{
-              color: '#666',
-              textAlign: 'center',
-              fontSize: '14px',
-              marginBottom: '25px'
-            }}>
-              Dirígete a tu perfil para completar estos datos antes de continuar.
-            </p>
-            <p style={{ color: '#666', textAlign: 'center', fontSize: '14px', marginBottom: '25px' }}>
-  Completa los campos arriba o ve a tu perfil.
-            </p>
-
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
-  <button onClick={() => {
-    if ((!user?.dirección && !tempDireccion?.trim()) || (!user?.teléfono && !tempTelefono?.trim())) {
-      setErrorMsg('Completa todos los campos requeridos');
-      return;
-    }
-    setShowDeliveryWarning(false);
-    handleCheckoutWithDelivery();
-  }} style={{ padding: '10px 20px', background: '#FF9800', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s ease' }}
-    onMouseOver={(e) => { e.target.style.background = '#F57C00'; }}
-    onMouseOut={(e) => { e.target.style.background = '#FF9800'; }}>
-    Guardar y Continuar →
-  </button>
-</div>
           </div>
         </div>
       )}
