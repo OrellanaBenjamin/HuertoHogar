@@ -365,7 +365,31 @@ const CheckoutPayment = () => {
           </label>
         </div>
 
-        {/* Detalles de Tarjeta (si está seleccionado débito o crédito) */}
+        {paymentMethod === 'transferencia' && (
+          <div style={{
+            background: '#f9f9f9',
+            padding: '20px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            border: '1px solid #2E8B57'
+          }}>
+            <h4 style={{ marginTop: 0, color: '#2E8B57' }}>Datos de la Cuenta</h4>
+            <div style={{ lineHeight: '1.8' }}>
+              <p style={{ margin: '5px 0' }}><strong>Banco:</strong> Banco Estado</p>
+              <p style={{ margin: '5px 0' }}><strong>Tipo:</strong> Cuenta Corriente</p>
+              <p style={{ margin: '5px 0' }}><strong>Nº de cuenta:</strong> 123456789-0</p>
+              <p style={{ margin: '5px 0' }}><strong>RUT:</strong> 12.345.678-9</p>
+              <p style={{ margin: '5px 0' }}><strong>Titular:</strong> HuertoHogar SpA</p>
+              <p style={{ margin: '5px 0' }}><strong>Correo:</strong> pagos@huertohogar.cl</p>
+            </div>
+            <p style={{ marginTop: '15px', fontSize: '14px', color: '#666', background: '#fff3e0', padding: '10px', borderRadius: '6px' }}>
+              💡 <strong>Monto a transferir:</strong> ${order.total?.toLocaleString('es-CL')}
+            </p>
+          </div>
+        )}
+
+
+
         {(paymentMethod === 'debito' || paymentMethod === 'credito') && (
           <div style={{
             background: '#f9f9f9',
