@@ -22,6 +22,8 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
   const [successMsg, setSuccessMsg] = useState("");
   const [showDeliveryWarning, setShowDeliveryWarning] = useState(false);
   const navigate = useNavigate();
+  const [tempDireccion, setTempDireccion] = useState(user?.dirección || '');
+  const [tempTelefono, setTempTelefono] = useState(user?.teléfono || '');
 
   const subtotal = carrito.reduce((acc, item) => {
     const prod = productos.find(p => p.id === item.id) || {};
@@ -78,6 +80,12 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
     }
 
     try {
+      const direccionFinal = tempDireccion?.trim() || user?.dirección?.trim() || '';
+      const telefonoFinal = tempTelefono?.trim() || user?.teléfono?.trim() || '';
+        if (tipoEntrega === 'envio' && (!direccionFinal || !telefonoFinal)) {
+          setErrorMsg('Dirección y teléfono requeridos para envío');
+          return;}
+
       const fecha = new Date().toLocaleString("es-CL");
       const items = carrito.map(i => ({ id: i.id, qty: i.qty }));
 
@@ -93,7 +101,9 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
         costoEnvio: shippingCost,
         cuponyAplicado: coupon.toUpperCase() || null,
         subtotal: subtotal,
-        fechaEstimadaEntrega: calcularFechaEntrega()
+        fechaEstimadaEntrega: calcularFechaEntrega(),
+        direccion: direccionFinal,
+        telefono: telefonoFinal
       });
 
       navigate(`/pago/${docRef.id}`, {
@@ -388,7 +398,7 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
               width: "100%",
               cursor: carrito.length === 0 ? "not-allowed" : "pointer"
             }}
-            disabled={carrito.length === 0 || !user?.dirección?.trim() || !user?.teléfono?.trim()}
+            disabled={carrito.length === 0 || (tipoEntrega === 'envio' && ((!user?.dirección?.trim() && !tempDireccion?.trim()) || (!user?.teléfono?.trim() && !tempTelefono?.trim())))}
             onClick={() => {
             if (!user?.dirección || !user?.teléfono) {
               setShowDeliveryWarning(true);
@@ -450,25 +460,22 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
               Para poder procesar tu pedido, necesitamos saber:
             </p>
 
-            <div style={{
-              background: '#f7f7f7',
-              padding: '15px',
-              borderRadius: '8px',
-              marginBottom: '20px',
-              textAlign: 'center'
-            }}>
-              {!user?.dirección && (
-                <div style={{ color: '#c62828', marginBottom: '10px', fontWeight: 'bold' }}>
-                  ❌ Dirección de entrega
-                </div>
-              )}
-              {!user?.teléfono && (
-                <div style={{ color: '#c62828', fontWeight: 'bold' }}>
-                  ❌ Teléfono de contacto
-                </div>
-              )}
+            <div style={{ background: '#f7f7f7', padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
+  {!user?.dirección && (
+    <div>
+      <label style={{ fontWeight: 'bold', color: '#333', display: 'block', marginBottom: 5 }}>Dirección de entrega:</label>
+      <input type="text" value={tempDireccion} onChange={e => setTempDireccion(e.target.value)}
+             placeholder="Ej: Av. Ejemplo 123, Santiago" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', marginBottom: 10 }} />
+    </div>
+  )}
+  {!user?.teléfono && (
+    <div>
+      <label style={{ fontWeight: 'bold', color: '#333', display: 'block', marginBottom: 5 }}>Teléfono de contacto:</label>
+      <input type="tel" value={tempTelefono} onChange={e => setTempTelefono(e.target.value)}
+             placeholder="Ej: +56912345678" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }} />
+    </div>
+            )}
             </div>
-
             <p style={{
               color: '#666',
               textAlign: 'center',
@@ -477,61 +484,24 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
             }}>
               Dirígete a tu perfil para completar estos datos antes de continuar.
             </p>
+            <p style={{ color: '#666', textAlign: 'center', fontSize: '14px', marginBottom: '25px' }}>
+  Completa los campos arriba o ve a tu perfil.
+            </p>
 
-            <div style={{
-              display: 'flex',
-              gap: '10px',
-              justifyContent: 'center'
-            }}>
-              <button
-                onClick={() => setShowDeliveryWarning(false)}
-                style={{
-                  padding: '10px 20px',
-                  background: '#fff',
-                  color: '#2E8B57',
-                  border: '2px solid #2E8B57',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.background = '#f0f8f5';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.background = '#fff';
-                }}
-              >
-                Cerrar
-              </button>
-
-              <button
-                onClick={() => {
-                  setShowDeliveryWarning(false);
-                  navigate('/perfil');
-                }}
-                style={{
-                  padding: '10px 20px',
-                  background: '#2E8B57',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.background = '#1e6a41';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.background = '#2E8B57';
-                }}
-              >
-                Ir a Perfil →
-              </button>
-            </div>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+  <button onClick={() => {
+    if ((!user?.dirección && !tempDireccion?.trim()) || (!user?.teléfono && !tempTelefono?.trim())) {
+      setErrorMsg('Completa todos los campos requeridos');
+      return;
+    }
+    setShowDeliveryWarning(false);
+    handleCheckoutWithDelivery();
+  }} style={{ padding: '10px 20px', background: '#FF9800', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s ease' }}
+    onMouseOver={(e) => { e.target.style.background = '#F57C00'; }}
+    onMouseOut={(e) => { e.target.style.background = '#FF9800'; }}>
+    Guardar y Continuar →
+  </button>
+</div>
           </div>
         </div>
       )}
@@ -540,4 +510,3 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
 };
 
 export default Cart;
-
