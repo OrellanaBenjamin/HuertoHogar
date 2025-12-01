@@ -386,32 +386,32 @@ const Cart = ({ carrito, productos, onRemove, onChangeQty, user }) =>{
 
 
           <button
-            style={{
-              marginTop: 20,
-              background: carrito.length === 0 ? "#ddd" : "#2E8B57",
-              color: carrito.length === 0 ? "#999" : "#fff",
-              border: "none",
-              borderRadius: 8,
-              padding: "14px 0",
-              fontWeight: "bold",
-              fontSize: 18,
-              width: "100%",
-              cursor: carrito.length === 0 ? "not-allowed" : "pointer"
-            }}
-            disabled={carrito.length === 0 || (tipoEntrega === 'envio' && ((!user?.dirección?.trim() && !tempDireccion?.trim()) || (!user?.teléfono?.trim() && !tempTelefono?.trim())))}
-            onClick={() => {
-            const direccionFinal = tempDireccion?.trim() || user?.dirección?.trim() || '';
-            const telefonoFinal = tempTelefono?.trim() || user?.teléfono?.trim() || '';
-  
-              if (tipoEntrega === 'envio' && (!direccionFinal || !telefonoFinal)) {
-                setShowDeliveryWarning(true);
-              } else {
-                handleCheckoutWithDelivery();
-              }
-            }}
-          >
-            ✅ Confirmar Pedido - ${total.toLocaleString()}
-          </button>
+  style={{
+    marginTop: 20,
+    background: carrito.length === 0 ? "#ddd" : "#2E8B57",
+    color: carrito.length === 0 ? "#999" : "#fff",
+    border: "none",
+    borderRadius: 8,
+    padding: "14px 0",
+    fontWeight: "bold",
+    fontSize: 18,
+    width: "100%",
+    cursor: carrito.length === 0 ? "not-allowed" : "pointer"
+  }}
+  disabled={carrito.length === 0}
+  onClick={() => {
+    const direccionFinal = tempDireccion?.trim() || user?.dirección?.trim() || '';
+    const telefonoFinal = tempTelefono?.trim() || user?.teléfono?.trim() || '';
+    
+    if (tipoEntrega === 'envio' && (!direccionFinal || !telefonoFinal)) {
+      setShowDeliveryWarning(true);
+    } else {
+      handleCheckoutWithDelivery();
+    }
+  }}
+>
+  ✅ Confirmar Pedido - ${total.toLocaleString()}
+</button>
         </>
       )}
 
