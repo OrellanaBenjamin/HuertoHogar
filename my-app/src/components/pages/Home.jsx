@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const logoSrc = "/img/logo.png";
 const recomendados = [
-  { id: "FR001", name: "Manzanas Fuji", desc: "Crujientes y dulces, perfectas para snack.", img: "/img/manzana.webp" },
-  { id: "VR001", name: "Zanahorias Orgánicas", desc: "Ricas en vitamina A y fibra.", img: "/img/zanahoria.webp" },
-  { id: "PO001", name: "Miel Orgánica", desc: "Pura de productores locales, antioxidante.", img: "/img/miel.jpg" }
+  { id: "FR001", name: "Manzanas Fuji", desc: "Crujientes y dulces, perfectas para snack.", image: "/img/manzana.jpg" },
+  { id: "VR001", name: "Zanahorias Orgánicas", desc: "Ricas en vitamina A y fibra.", image: "/img/zanahoria.jpg" },
+  { id: "PO001", name: "Miel Orgánica", desc: "Pura de productores locales, antioxidante.", image: "/img/miel.jpg" }
 ];
 const blog = [
   { titulo: "Cómo elegir frutas y verduras frescas", resumen: "Descubre los secretos para seleccionar productos de la mejor calidad y sabor en tu hogar.", link: "#" },
@@ -64,7 +64,7 @@ const Home = () => (
               boxShadow: "0 1px 7px #ddd",
               display: "flex", flexDirection: "column", alignItems: "center"
             }}>
-              <img src={prod.img} alt={prod.name} style={{
+              <img src={prod.image} alt={prod.name} style={{
                 width: "92%", height: 90, objectFit: "cover", borderRadius: 10, marginBottom: 10,
                 boxShadow: "0 1px 7px #ccc"
               }} />
