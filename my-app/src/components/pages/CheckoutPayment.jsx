@@ -7,6 +7,7 @@ const CheckoutPayment = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
+  const [transferConfirmed, setTransferConfirmed] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('pago_vivienda');
   const [cardNumber, setCardNumber] = useState('');
   const [cardHolder, setCardHolder] = useState('');
@@ -67,10 +68,9 @@ const CheckoutPayment = () => {
     return v;
   };
 
-  const handlePaymentSubmit = async (e) => {
+   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validaciones
+
     if (paymentMethod === 'pago_vivienda') {
       if (!order || order.total > 50000) {
         setError('Pago en vivienda solo disponible para pedidos menores a $50.000');
@@ -93,12 +93,46 @@ const CheckoutPayment = () => {
         setError('CVV inválido');
         return;
       }
+    } else if (paymentMethod === 'transferencia') {
+      if (!transferConfirmed) {
+        setError('⚠️ Debes confirmar que realizaste la transferencia');
+        return;
+      }
     }
 
     try {
       setLoading(true);
       
-      // Actualizar el documento del pedido con el método de pago
+      const orderRef = doc(db, 'pedidos', orderId);
+      const updateData = {
+        metodoPago: paymentMethod,
+        ...(paymentMethod === 'transferencia' && {
+          estadoPago: 'Transferencia pendiente de validación',
+          estado: 'En proceso'
+        }),
+        ...(paymentMethod !== 'pago_vivienda' && paymentMethod !== 'transferencia' && {
+          ultimos4Digitos: cardNumber.slice(-4),
+          titular: cardHolder
+        })
+      };
+      
+      await updateDoc(orderRef, updateData);
+      
+      setSuccess('✓ Método de pago guardado exitosamente');
+      setTimeout(() => {
+        navigate(`/confirmacion/${orderId}`);
+      }, 1500);
+    } catch (err) {
+      setError('Error al procesar el pago: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+    try {
+      setLoading(true);
+      
+
       const orderRef = doc(db, 'pedidos', orderId);
       await updateDoc(orderRef, {
         metodoPago: paymentMethod,
@@ -183,7 +217,34 @@ const CheckoutPayment = () => {
         </div>
       </div>
 
-      {/* Mensajes de Error y Éxito */}
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '15px',
+            border: paymentMethod === 'transferencia' ? '2px solid #2E8B57' : '1px solid #ddd',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            background: paymentMethod === 'transferencia' ? '#f0f8f5' : 'white',
+            transition: 'all 0.3s ease'
+          }}>
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="transferencia"
+              checked={paymentMethod === 'transferencia'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              style={{ marginRight: '10px', cursor: 'pointer' }}
+            />
+            <div>
+              <strong>🏦 Transferencia Bancaria</strong>
+              <div style={{ fontSize: '12px', color: '#666' }}>
+                Transfiere a nuestra cuenta y confirma
+              </div>
+            </div>
+          </label>
+        </div>
+
       {error && (
         <div style={{
           background: '#ffebee',
